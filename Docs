@@ -1,0 +1,73 @@
+ Requisitos do Sistema - Praça App 
+
+ 1. Visão Geral
+
+O Praça App é um sistema mobile desenvolvido para auxiliar vendedores no controle de vendas e estoque.  
+O sistema permite o cadastro de produtos, registro de vendas e acompanhamento do desempenho do negócio, contribuindo para um melhor planejamento de compras e gestão do estoque.
+
+
+ 2. Atores do Sistema
+
+- Vendedor: usuário responsável por gerenciar produtos, estoque e vendas.
+
+
+ 3. Requisitos Funcionais (RF)
+
+3.1 Autenticação
+
+- RF01 - O sistema deve permitir o login do usuário.
+- RF02 - O sistema deve manter o usuário autenticado por um período prolongado (login diário).
+- RF03 - O sistema deve permitir o logout do usuário.
+
+
+3.2 Gestão de Produtos
+
+- RF04 - O sistema deve permitir o cadastro de produtos.
+- RF05 - O sistema deve permitir a edição de produtos.
+- RF06 - O sistema deve permitir a exclusão de produtos.
+- RF07 - O sistema deve armazenar os produtos em banco de dados.
+
+
+3.3 Controle de Estoque
+
+- RF08 - O sistema deve controlar a quantidade de produtos em estoque.
+- RF09 - O sistema deve atualizar automaticamente o estoque após cada venda.
+- RF10 - O sistema deve registrar entradas e saídas de produtos.
+
+
+
+ 3.4 Vendas
+
+- RF11 - O sistema deve permitir o registro de vendas.
+- RF12 - O sistema deve reduzir o estoque ao realizar uma venda.
+- RF13 - O sistema deve armazenar o histórico de vendas.
+
+
+ 3.5 Relatórios e Dashboard
+
+- RF14 - O sistema deve exibir um dashboard de vendas.
+- RF15 - O sistema deve apresentar vendas diárias.
+- RF16 - O sistema deve apresentar vendas semanais.
+- RF17 - O sistema deve apresentar vendas mensais.
+
+
+ 4. Regras de Negócio (RN)
+
+- RN01 - O sistema não deve permitir estoque negativo.
+- RN02 - Toda venda deve estar vinculada a produtos cadastrados.
+- RN03 - O login deve permanecer ativo por um período prolongado (mínimo de 1 dia).
+- RN04 - Não deve ser possível realizar vendas de produtos sem estoque disponível.
+
+
+
+ 5. Requisitos Não Funcionais (RNF)
+
+- RNF01 - O sistema deve ser acessível em dispositivos móveis.
+- RNF02 - O sistema deve possuir interface simples e intuitiva.
+- RNF03 - O sistema deve garantir a segurança dos dados do usuário.
+- RNF04 - O sistema deve apresentar bom desempenho nas operações.
+- RNF05 - O sistema deve utilizar um banco de dados confiável.
+
+ 6. Plataforma
+
+- O sistema será desenvolvido para uso em dispositivos móveis (smartphones).
