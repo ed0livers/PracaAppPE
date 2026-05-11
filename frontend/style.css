@@ -51,7 +51,7 @@ body {
   cursor: pointer;
 }
 
-/* --- ÁREA DE LOGIN --- */
+/* --- ÁREA DE LOGIN E FORMULÁRIOS --- */
 .login-container {
   display: flex;
   flex-direction: column;
@@ -126,7 +126,7 @@ body {
 
 /* --- BARRA INFERIOR E ABAS --- */
 .conteudo-aba {
-  padding-bottom: 80px; /* Garante que o texto não fique escondido atrás da barra inferior */
+  padding-bottom: 80px; 
 }
 
 .bottom-nav {

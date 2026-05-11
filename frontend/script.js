@@ -1,5 +1,5 @@
 // ==========================================
-// 1. LÓGICA DE LOGIN (TROCA DE TELAS)
+// 1. LÓGICA DE LOGIN
 // ==========================================
 const btnEntrar = document.getElementById('btn-entrar');
 const telaLogin = document.getElementById('tela-login');
@@ -11,7 +11,30 @@ btnEntrar.addEventListener('click', () => {
 });
 
 // ==========================================
-// 2. LÓGICA DOS FILTROS (PILLS VERDES)
+// 2. LÓGICA DA BARRA INFERIOR
+// ==========================================
+const botoesNav = document.querySelectorAll('.nav-item');
+const conteudosAba = document.querySelectorAll('.conteudo-aba');
+
+botoesNav.forEach(botao => {
+  botao.addEventListener('click', () => {
+    // Troca a cor verde do ícone
+    botoesNav.forEach(b => b.classList.remove('ativo'));
+    botao.classList.add('ativo');
+
+    // Esconde todas as abas
+    conteudosAba.forEach(aba => {
+      aba.style.display = 'none';
+    });
+
+    // Mostra apenas a aba alvo
+    const idAbaAlvo = botao.getAttribute('data-target');
+    document.getElementById(idAbaAlvo).style.display = 'block';
+  });
+});
+
+// ==========================================
+// 3. LÓGICA DOS FILTROS (PILLS VERDES)
 // ==========================================
 const botoesFiltro = document.querySelectorAll('.btn-pill');
 
@@ -23,25 +46,28 @@ botoesFiltro.forEach(botao => {
 });
 
 // ==========================================
-// 3. LÓGICA DA NAVEGAÇÃO ENTRE ABAS (BARRA INFERIOR)
+// 4. LÓGICA DE ADICIONAR PRODUTO
 // ==========================================
-const botoesNav = document.querySelectorAll('.nav-item');
-const conteudosAba = document.querySelectorAll('.conteudo-aba');
+const btnAbrirAdd = document.getElementById('btn-abrir-add');
+const telaAddProduto = document.getElementById('tela-add-produto');
+const btnCancelarProduto = document.getElementById('btn-cancelar-produto');
+const btnSalvarProduto = document.getElementById('btn-salvar-produto');
 
-botoesNav.forEach(botao => {
-  botao.addEventListener('click', () => {
-    // Passo A: Troca a cor verde do ícone da barra inferior
-    botoesNav.forEach(b => b.classList.remove('ativo'));
-    botao.classList.add('ativo');
+// Abre a tela de adicionar produto
+btnAbrirAdd.addEventListener('click', () => {
+  telaPrincipal.style.display = 'none';
+  telaAddProduto.style.display = 'block';
+});
 
-    // Passo B: Esconde TODAS as abas (Início, Estoque, Vendas, etc)
-    conteudosAba.forEach(aba => {
-      aba.style.display = 'none';
-    });
+// Cancela e volta para a tela principal
+btnCancelarProduto.addEventListener('click', () => {
+  telaAddProduto.style.display = 'none';
+  telaPrincipal.style.display = 'block';
+});
 
-    // Passo C: Descobre qual botão foi clicado através do "data-target"
-    // E mostra APENAS a aba correspondente
-    const idAbaAlvo = botao.getAttribute('data-target');
-    document.getElementById(idAbaAlvo).style.display = 'block';
-  });
+// Simula o salvamento e volta para a tela principal
+btnSalvarProduto.addEventListener('click', () => {
+  alert("Sucesso! Produto adicionado ao estoque.");
+  telaAddProduto.style.display = 'none';
+  telaPrincipal.style.display = 'block';
 });

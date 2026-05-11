@@ -40,7 +40,7 @@
       <div id="aba-inicio" class="conteudo-aba">
         <h3 style="color: var(--cor-texto-escuro);">Olá, Maria! 🌸</h3>
 
-        <button class="btn-primary com-icone">
+        <button id="btn-abrir-add" class="btn-primary com-icone">
           <i>+</i> Adicionar produto
         </button>
         
@@ -94,9 +94,33 @@
           <span class="texto">Mais</span>
         </button>
       </nav>
+    </div>
 
+    <div id="tela-add-produto" style="display: none; padding-top: 20px;">
+      <h3 style="color: var(--cor-texto-escuro); margin-bottom: 20px;">Adicionar Novo Produto</h3>
+
+      <div class="login-container">
+        <div class="input-group">
+          <span class="icone-input">🏷️</span>
+          <input type="text" placeholder="Nome do produto (ex: Rosa Vermelha)">
+        </div>
+
+        <div class="input-group">
+          <span class="icone-input">💲</span>
+          <input type="number" placeholder="Preço (R$)">
+        </div>
+
+        <div class="input-group">
+          <span class="icone-input">📦</span>
+          <input type="number" placeholder="Quantidade em estoque">
+        </div>
+
+        <button id="btn-salvar-produto" class="btn-primary">Salvar Produto</button>
+        <button id="btn-cancelar-produto" class="btn-secondary">Cancelar</button>
+      </div>
     </div>
 
     <script src="script.js"></script>
+
 </body>
 </html>
