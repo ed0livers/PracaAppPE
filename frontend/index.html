@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Flor & Gestão</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="tela-login">
+      <h2 style="text-align: center; color: var(--cor-primaria); margin-top: 50px; margin-bottom: 30px;">Flor & Gestão</h2>
+      
+      <div class="login-container">
+        <div class="input-group">
+          <span class="icone-input">👤</span>
+          <input type="text" placeholder="E-mail ou telefone">
+        </div>
+
+        <div class="input-group">
+          <span class="icone-input">🔒</span>
+          <input type="password" placeholder="Senha">
+          <span class="icone-input">👁️</span>
+        </div>
+
+        <div class="login-opcoes">
+          <label>
+            <input type="checkbox" checked> Lembrar-me
+          </label>
+          <a href="#" class="link-esqueci">Esqueci minha senha</a>
+        </div>
+
+        <button id="btn-entrar" class="btn-primary">Entrar</button>
+        <button class="btn-secondary">Criar conta</button>
+      </div>
+    </div>
+
+    <div id="tela-principal" style="display: none;">
+      
+      <h3 style="color: var(--cor-texto-escuro);">Olá, Maria! 🌸</h3>
+
+      <button class="btn-primary com-icone">
+        <i>+</i> Adicionar produto
+      </button>
+      
+      <div class="filtro-container">
+        <button class="btn-pill ativo">Todos</button>
+        <button class="btn-pill">Flores</button>
+        <button class="btn-pill">Folhagens</button>
+        <button class="btn-pill">Decorações</button>
+      </div>
+      
+      <nav class="bottom-nav">
+        <button class="nav-item ativo">
+          <span class="icone">🏠</span>
+          <span class="texto">Início</span>
+        </button>
+        <button class="nav-item">
+          <span class="icone">📦</span>
+          <span class="texto">Estoque</span>
+        </button>
+        <button class="nav-item">
+          <span class="icone">🛍️</span>
+          <span class="texto">Vendas</span>
+        </button>
+        <button class="nav-item">
+          <span class="icone">💲</span>
+          <span class="texto">Financeiro</span>
+        </button>
+        <button class="nav-item">
+          <span class="icone">•••</span>
+          <span class="texto">Mais</span>
+        </button>
+      </nav>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
