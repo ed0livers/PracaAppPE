@@ -37,37 +37,59 @@
 
     <div id="tela-principal" style="display: none;">
       
-      <h3 style="color: var(--cor-texto-escuro);">Olá, Maria! 🌸</h3>
+      <div id="aba-inicio" class="conteudo-aba">
+        <h3 style="color: var(--cor-texto-escuro);">Olá, Maria! 🌸</h3>
 
-      <button class="btn-primary com-icone">
-        <i>+</i> Adicionar produto
-      </button>
-      
-      <div class="filtro-container">
-        <button class="btn-pill ativo">Todos</button>
-        <button class="btn-pill">Flores</button>
-        <button class="btn-pill">Folhagens</button>
-        <button class="btn-pill">Decorações</button>
+        <button class="btn-primary com-icone">
+          <i>+</i> Adicionar produto
+        </button>
+        
+        <div class="filtro-container">
+          <button class="btn-pill ativo">Todos</button>
+          <button class="btn-pill">Flores</button>
+          <button class="btn-pill">Folhagens</button>
+          <button class="btn-pill">Decorações</button>
+        </div>
       </div>
-      
+
+      <div id="aba-estoque" class="conteudo-aba" style="display: none;">
+        <h3 style="color: var(--cor-texto-escuro);">📦 Meu Estoque</h3>
+        <p style="color: var(--cor-texto-claro); font-size: 14px;">Aqui vai entrar a sua lista de produtos no futuro!</p>
+      </div>
+
+      <div id="aba-vendas" class="conteudo-aba" style="display: none;">
+        <h3 style="color: var(--cor-texto-escuro);">🛍️ Vendas</h3>
+        <p style="color: var(--cor-texto-claro); font-size: 14px;">Tela de carrinho e finalização de vendas.</p>
+      </div>
+
+      <div id="aba-financeiro" class="conteudo-aba" style="display: none;">
+        <h3 style="color: var(--cor-texto-escuro);">💲 Financeiro</h3>
+        <p style="color: var(--cor-texto-claro); font-size: 14px;">Relatórios de lucros e despesas mensais.</p>
+      </div>
+
+      <div id="aba-mais" class="conteudo-aba" style="display: none;">
+        <h3 style="color: var(--cor-texto-escuro);">⚙️ Configurações</h3>
+        <p style="color: var(--cor-texto-claro); font-size: 14px;">Perfil da loja, equipe e opções do sistema.</p>
+      </div>
+
       <nav class="bottom-nav">
-        <button class="nav-item ativo">
+        <button class="nav-item ativo" data-target="aba-inicio">
           <span class="icone">🏠</span>
           <span class="texto">Início</span>
         </button>
-        <button class="nav-item">
+        <button class="nav-item" data-target="aba-estoque">
           <span class="icone">📦</span>
           <span class="texto">Estoque</span>
         </button>
-        <button class="nav-item">
+        <button class="nav-item" data-target="aba-vendas">
           <span class="icone">🛍️</span>
           <span class="texto">Vendas</span>
         </button>
-        <button class="nav-item">
+        <button class="nav-item" data-target="aba-financeiro">
           <span class="icone">💲</span>
           <span class="texto">Financeiro</span>
         </button>
-        <button class="nav-item">
+        <button class="nav-item" data-target="aba-mais">
           <span class="icone">•••</span>
           <span class="texto">Mais</span>
         </button>
@@ -76,6 +98,5 @@
     </div>
 
     <script src="script.js"></script>
-
 </body>
 </html>

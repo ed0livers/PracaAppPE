@@ -9,9 +9,9 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background-color: white;
-  margin: 0 auto; /* Centraliza na tela do PC */
+  margin: 0 auto;
   padding: 20px;
-  max-width: 400px; /* Limita a largura para ficar igual a um celular */
+  max-width: 400px;
   min-height: 100vh;
   box-shadow: 0 0 20px rgba(0,0,0,0.1);
   position: relative;
@@ -124,7 +124,11 @@ body {
   border-color: var(--cor-primaria);
 }
 
-/* --- BARRA INFERIOR --- */
+/* --- BARRA INFERIOR E ABAS --- */
+.conteudo-aba {
+  padding-bottom: 80px; /* Garante que o texto não fique escondido atrás da barra inferior */
+}
+
 .bottom-nav {
   position: absolute;
   bottom: 0;
