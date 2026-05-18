@@ -12,7 +12,7 @@ import { API_URL } from '@/constants/api'; // Importamos a URL do servidor
  */
 export default function TelaDeEstoque() {
   // Variáveis de estado
-  const [produtos, setProdutos] = useState([]); // Lista de produtos vinda da API
+  const [produtos, setProdutos] = useState<any[]>([]); // Lista de produtos vinda da API
   const [carregando, setCarregando] = useState(true); // Controla se mostramos a bolinha de loading
 
   // O "useEffect" roda um pedaço de código sozinho toda vez que a tela é carregada

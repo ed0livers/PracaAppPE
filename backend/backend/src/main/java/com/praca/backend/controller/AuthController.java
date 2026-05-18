@@ -31,19 +31,17 @@ public class AuthController {
 
     /**
      * Rota de Login. (Acessado via POST)
-     * O aplicativo React Native envia um JSON com "email" e "senha".
      */
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> dadosDoLogin) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> dadosDoLogin) {
         String email = dadosDoLogin.get("email");
         String senha = dadosDoLogin.get("senha");
 
-        boolean loginAprovado = servicoDeUsuarios.realizarLogin(email, senha);
+        Usuario usuarioLogado = servicoDeUsuarios.realizarLogin(email, senha);
 
-        if (loginAprovado) {
-            return ResponseEntity.ok("Login realizado com sucesso!");
+        if (usuarioLogado != null) {
+            return ResponseEntity.ok(usuarioLogado); // Retorna o objeto (nome, email, etc) pro aplicativo!
         } else {
-            // Se o e-mail for errado ou a senha não bater com o Hash, retorna erro 401 (Não Autorizado)
             return ResponseEntity.status(401).body("E-mail ou senha incorretos.");
         }
     }

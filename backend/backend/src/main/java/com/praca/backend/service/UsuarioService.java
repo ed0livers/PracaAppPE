@@ -34,17 +34,19 @@ public class UsuarioService {
     /**
      * Função que tenta realizar o Login comparando o e-mail e a senha digitada.
      */
-    public boolean realizarLogin(String email, String senhaDigitada) {
+    public Usuario realizarLogin(String email, String senhaDigitada) {
         // 1. Procura se existe algum usuário com esse e-mail no banco
         Optional<Usuario> usuarioEncontrado = repositorioDeUsuarios.findByEmail(email);
 
         if (usuarioEncontrado.isPresent()) {
-            // 2. Se encontrou o e-mail, usamos o BCrypt para comparar a senha digitada com o Hash gravado no banco
             Usuario usuario = usuarioEncontrado.get();
-            return codificadorDeSenha.matches(senhaDigitada, usuario.getSenha());
+            // 2. Se a senha bater com o Hash gravado no banco, retorna o Usuário
+            if (codificadorDeSenha.matches(senhaDigitada, usuario.getSenha())) {
+                return usuario;
+            }
         }
 
-        // Retorna falso se o e-mail não existir
-        return false;
+        // Retorna nulo se o e-mail não existir ou a senha estiver incorreta
+        return null;
     }
 }

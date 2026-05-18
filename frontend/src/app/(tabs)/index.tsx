@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '@/context/AuthContext';
 
 /**
  * TelaPainelPrincipal (DashboardScreen)
@@ -10,25 +11,28 @@ import { Ionicons } from '@expo/vector-icons';
  * Como o conteúdo pode ultrapassar a tela, utilizamos o "ScrollView" para permitir rolagem.
  */
 export default function TelaPainelPrincipal() {
+  // Pega os dados globais do usuário logado através do Contexto
+  const { usuario } = useAuth();
+
   return (
     <ScrollView style={estilos.container}>
       {/* Cabeçalho de boas-vindas */}
       <View style={estilos.cabecalhoBoasVindas}>
-        <Text style={estilos.saudacao}>Olá, Vendedor!</Text>
-        <Text style={estilos.dataAtual}>16 de Maio de 2026</Text>
+        <Text style={estilos.saudacao}>Olá, {usuario?.nome || 'Vendedor'}!</Text>
+        <Text style={estilos.dataAtual}>{new Date().toLocaleDateString('pt-BR')}</Text>
       </View>
 
-      {/* Cartões de resumo financeiro */}
+      {/* Cartões de resumo financeiro - Zerados para novos cadastros */}
       <View style={estilos.containerDeResumo}>
         <View style={[estilos.cartaoResumo, { backgroundColor: '#e6f7ff' }]}>
           <Ionicons name="cash-outline" size={32} color="#0099ff" />
           <Text style={estilos.tituloCartao}>Vendas Hoje</Text>
-          <Text style={estilos.valorCartao}>R$ 450,00</Text>
+          <Text style={estilos.valorCartao}>R$ 0,00</Text>
         </View>
         <View style={[estilos.cartaoResumo, { backgroundColor: '#f6ffed' }]}>
           <Ionicons name="cart-outline" size={32} color="#52c41a" />
           <Text style={estilos.tituloCartao}>Pedidos</Text>
-          <Text style={estilos.valorCartao}>12</Text>
+          <Text style={estilos.valorCartao}>0</Text>
         </View>
       </View>
 
@@ -36,7 +40,6 @@ export default function TelaPainelPrincipal() {
       <View style={estilos.secaoAcoesRapidas}>
         <Text style={estilos.tituloDaSecao}>Ações Rápidas</Text>
         <View style={estilos.gradeDeAcoes}>
-          {/* O botão navega o usuário direto para a aba de Vendas */}
           <TouchableOpacity style={estilos.botaoAcao} onPress={() => router.push('/(tabs)/vendas')}>
             <View style={[estilos.caixaDoIcone, { backgroundColor: '#e6f2ff' }]}>
               <Ionicons name="add-circle" size={28} color="#208AEF" />
@@ -44,7 +47,6 @@ export default function TelaPainelPrincipal() {
             <Text style={estilos.textoDaAcao}>Nova Venda</Text>
           </TouchableOpacity>
           
-          {/* O botão navega o usuário para a tela Modal de Adicionar Produto */}
           <TouchableOpacity style={estilos.botaoAcao} onPress={() => router.push('/adicionar-produto')}>
             <View style={[estilos.caixaDoIcone, { backgroundColor: '#f0f5ff' }]}>
               <Ionicons name="cube" size={28} color="#5c8aeb" />
@@ -54,22 +56,11 @@ export default function TelaPainelPrincipal() {
         </View>
       </View>
       
-      {/* Lista das últimas vendas (dados estáticos por enquanto) */}
+      {/* Lista das últimas vendas (Mensagem vazia) */}
       <View style={estilos.secaoUltimasVendas}>
         <Text style={estilos.tituloDaSecao}>Últimas Vendas</Text>
-        <View style={estilos.itemDeVenda}>
-          <View style={estilos.informacoesDaVenda}>
-            <Text style={estilos.produtoVendido}>2x Camiseta Básica</Text>
-            <Text style={estilos.horarioVenda}>14:30</Text>
-          </View>
-          <Text style={estilos.precoVenda}>R$ 70,00</Text>
-        </View>
-        <View style={estilos.itemDeVenda}>
-          <View style={estilos.informacoesDaVenda}>
-            <Text style={estilos.produtoVendido}>1x Calça Jeans</Text>
-            <Text style={estilos.horarioVenda}>13:15</Text>
-          </View>
-          <Text style={estilos.precoVenda}>R$ 120,00</Text>
+        <View style={[estilos.itemDeVenda, { justifyContent: 'center' }]}>
+          <Text style={{ color: '#888', fontStyle: 'italic', paddingVertical: 10 }}>Nenhuma venda registrada hoje.</Text>
         </View>
       </View>
     </ScrollView>

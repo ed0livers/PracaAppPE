@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Alert, ActivityIndicator, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { API_URL } from '@/constants/api';
+import { useAuth } from '@/context/AuthContext';
 
 /**
  * TelaDeLogin (LoginScreen)
@@ -34,6 +35,9 @@ export default function TelaDeLogin() {
     setDataNascimentoDigitada(limpo);
   };
 
+  // Extrair a função setUsuario do nosso contexto
+  const { setUsuario } = useAuth();
+
   const realizarLogin = async () => {
     if (!emailDigitado || !senhaDigitada) {
       Alert.alert('Atenção', 'Preencha seu e-mail e senha!');
@@ -49,6 +53,27 @@ export default function TelaDeLogin() {
       });
 
       if (resposta.ok) {
+        // Lemos a resposta como texto primeiro para evitar o "JSON Parse error"
+        const textoDaResposta = await resposta.text();
+        
+        try {
+          // Tenta converter para JSON (caso o Java já esteja rodando a versão nova)
+          const dadosDoUsuario = JSON.parse(textoDaResposta);
+          setUsuario({
+            nome: dadosDoUsuario.nome,
+            email: dadosDoUsuario.email,
+            foto: 'https://cdn-icons-png.flaticon.com/512/149/149071.png' // Foto padrão
+          });
+        } catch (e) {
+          // Se der erro ao converter, significa que o Java retornou "Login realizado com sucesso!" (Versão antiga do código)
+          // Salva dados genéricos só para permitir a entrada
+          setUsuario({
+            nome: 'Vendedor',
+            email: emailDigitado,
+            foto: 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
+          });
+        }
+
         router.replace('/(tabs)');
       } else {
         Alert.alert('Ops!', 'E-mail ou senha incorretos.');
