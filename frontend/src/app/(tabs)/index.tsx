@@ -1,40 +1,100 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { router } from 'expo-router';
+import { useState, useCallback } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '@/context/AuthContext';
+import { usarAutenticacao } from '@/context/AuthContext';
+import { URL_API } from '@/constants/api';
 
-/**
- * TelaPainelPrincipal (DashboardScreen)
- * 
- * É a primeira tela que o usuário vê após logar.
- * Contém um resumo rápido do dia (vendas e pedidos) e atalhos para ações frequentes.
- * Como o conteúdo pode ultrapassar a tela, utilizamos o "ScrollView" para permitir rolagem.
- */
 export default function TelaPainelPrincipal() {
-  // Pega os dados globais do usuário logado através do Contexto
-  const { usuario } = useAuth();
+  const { usuario } = usarAutenticacao();
+  const [vendas, setVendas] = useState<any[]>([]);
+  const [carregando, setCarregando] = useState(true);
+
+  // Recarrega o painel toda vez que a tela entra em foco
+  useFocusEffect(
+    useCallback(() => {
+      buscarDadosFinanceiros();
+    }, [])
+  );
+
+  const buscarDadosFinanceiros = async () => {
+    try {
+      const resposta = await fetch(`${URL_API}/vendas`);
+      if (resposta.ok) {
+        const dados = await resposta.json();
+        setVendas(dados);
+      }
+    } catch (erro) {
+      console.error('Falha ao buscar faturamento no dashboard:', erro);
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  // Retorna a string local no formato YYYY-MM-DD
+  const obterDataHojeString = () => {
+    const data = new Date();
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
+
+  const hojeStr = obterDataHojeString();
+  const vendasHoje = vendas.filter(v => v.dataDaVenda && v.dataDaVenda.startsWith(hojeStr));
+  
+  const faturamentoHoje = vendasHoje.reduce((soma, v) => soma + v.valorTotal, 0);
+  const quantidadePedidosHoje = vendasHoje.length;
+
+  // Pega as últimas 3 vendas ordenadas por id / data decrescente
+  const ultimasVendas = [...vendas]
+    .sort((a, b) => b.id - a.id)
+    .slice(0, 3);
+
+  const formatarHora = (dataIso: string) => {
+    try {
+      const partes = dataIso.split('T');
+      if (partes.length > 1) {
+        return partes[1].substring(0, 5); // Retorna HH:MM
+      }
+    } catch (e) {}
+    return '';
+  };
+
+  const formatarDescricaoItens = (venda: any) => {
+    if (!venda.itens || venda.itens.length === 0) return 'Venda sem itens';
+    return venda.itens
+      .map((item: any) => `${item.quantidade}x ${item.produto ? item.produto.nome : 'Produto'}`)
+      .join(', ');
+  };
 
   return (
-    <ScrollView style={estilos.container}>
+    <ScrollView style={estilos.container} showsVerticalScrollIndicator={false}>
       {/* Cabeçalho de boas-vindas */}
       <View style={estilos.cabecalhoBoasVindas}>
         <Text style={estilos.saudacao}>Olá, {usuario?.nome || 'Vendedor'}!</Text>
-        <Text style={estilos.dataAtual}>{new Date().toLocaleDateString('pt-BR')}</Text>
+        <Text style={estilos.dataAtual}>
+          {new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+        </Text>
       </View>
 
-      {/* Cartões de resumo financeiro - Zerados para novos cadastros */}
-      <View style={estilos.containerDeResumo}>
-        <View style={[estilos.cartaoResumo, { backgroundColor: '#e6f7ff' }]}>
-          <Ionicons name="cash-outline" size={32} color="#0099ff" />
-          <Text style={estilos.tituloCartao}>Vendas Hoje</Text>
-          <Text style={estilos.valorCartao}>R$ 0,00</Text>
+      {/* Cartões de resumo financeiro com dados dinâmicos */}
+      {carregando ? (
+        <ActivityIndicator size="small" color="#208AEF" style={{ marginVertical: 20 }} />
+      ) : (
+        <View style={estilos.containerDeResumo}>
+          <View style={[estilos.cartaoResumo, { backgroundColor: '#e6f7ff' }]}>
+            <Ionicons name="cash-outline" size={32} color="#0099ff" />
+            <Text style={estilos.tituloCartao}>Vendas Hoje</Text>
+            <Text style={estilos.valorCartao}>R$ {faturamentoHoje.toFixed(2).replace('.', ',')}</Text>
+          </View>
+          <View style={[estilos.cartaoResumo, { backgroundColor: '#f6ffed' }]}>
+            <Ionicons name="cart-outline" size={32} color="#52c41a" />
+            <Text style={estilos.tituloCartao}>Pedidos</Text>
+            <Text style={estilos.valorCartao}>{quantidadePedidosHoje}</Text>
+          </View>
         </View>
-        <View style={[estilos.cartaoResumo, { backgroundColor: '#f6ffed' }]}>
-          <Ionicons name="cart-outline" size={32} color="#52c41a" />
-          <Text style={estilos.tituloCartao}>Pedidos</Text>
-          <Text style={estilos.valorCartao}>0</Text>
-        </View>
-      </View>
+      )}
 
       {/* Botões de atalho rápido */}
       <View style={estilos.secaoAcoesRapidas}>
@@ -56,12 +116,35 @@ export default function TelaPainelPrincipal() {
         </View>
       </View>
       
-      {/* Lista das últimas vendas (Mensagem vazia) */}
+      {/* Lista das últimas vendas */}
       <View style={estilos.secaoUltimasVendas}>
         <Text style={estilos.tituloDaSecao}>Últimas Vendas</Text>
-        <View style={[estilos.itemDeVenda, { justifyContent: 'center' }]}>
-          <Text style={{ color: '#888', fontStyle: 'italic', paddingVertical: 10 }}>Nenhuma venda registrada hoje.</Text>
-        </View>
+        
+        {carregando ? (
+          <ActivityIndicator size="small" color="#208AEF" />
+        ) : ultimasVendas.length === 0 ? (
+          <View style={[estilos.itemDeVenda, { justifyContent: 'center' }]}>
+            <Text style={{ color: '#888', fontStyle: 'italic', paddingVertical: 10 }}>
+              Nenhuma venda registrada ainda.
+            </Text>
+          </View>
+        ) : (
+          ultimasVendas.map((venda) => (
+            <View key={venda.id} style={estilos.itemDeVenda}>
+              <View style={estilos.informacoesDaVenda}>
+                <Text style={estilos.produtoVendido} numberOfLines={1}>
+                  {formatarDescricaoItens(venda)}
+                </Text>
+                <Text style={estilos.horarioVenda}>
+                  Pedido #{venda.id} • às {formatarHora(venda.dataDaVenda)}
+                </Text>
+              </View>
+              <Text style={estilos.precoVenda}>
+                R$ {venda.valorTotal.toFixed(2).replace('.', ',')}
+              </Text>
+            </View>
+          ))
+        )}
       </View>
     </ScrollView>
   );
@@ -71,7 +154,7 @@ const estilos = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f8f9fa' },
   cabecalhoBoasVindas: { padding: 20, paddingTop: 10 },
   saudacao: { fontSize: 24, fontWeight: 'bold', color: '#333' },
-  dataAtual: { fontSize: 14, color: '#666', marginTop: 4 },
+  dataAtual: { fontSize: 14, color: '#666', marginTop: 4, textTransform: 'capitalize' },
   containerDeResumo: { flexDirection: 'row', paddingHorizontal: 20, gap: 16 },
   cartaoResumo: { flex: 1, padding: 16, borderRadius: 16, elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 },
   tituloCartao: { fontSize: 14, color: '#555', marginTop: 8 },
@@ -84,7 +167,7 @@ const estilos = StyleSheet.create({
   textoDaAcao: { fontSize: 14, fontWeight: '600', color: '#444' },
   secaoUltimasVendas: { padding: 20, paddingTop: 0 },
   itemDeVenda: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', padding: 16, borderRadius: 12, marginBottom: 12 },
-  informacoesDaVenda: { flex: 1 },
+  informacoesDaVenda: { flex: 1, marginRight: 8 },
   produtoVendido: { fontSize: 16, fontWeight: '500', color: '#333' },
   horarioVenda: { fontSize: 13, color: '#888', marginTop: 4 },
   precoVenda: { fontSize: 16, fontWeight: 'bold', color: '#208AEF' },

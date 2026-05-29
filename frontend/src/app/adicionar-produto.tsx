@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
-import { API_URL } from '@/constants/api'; // Importando nosso endereço do Java
+import { URL_API } from '@/constants/api'; // Importando nosso endereço do Java
 
 /**
  * TelaAdicionarProduto (AdicionarProdutoScreen)
@@ -39,7 +39,7 @@ export default function TelaAdicionarProduto() {
         estoque: parseInt(estoque, 10) // Garante que seja número inteiro
       };
 
-      const resposta = await fetch(`${API_URL}/produtos`, {
+      const resposta = await fetch(`${URL_API}/produtos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

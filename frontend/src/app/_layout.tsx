@@ -1,8 +1,8 @@
 import { Stack } from 'expo-router';
 import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native';
-import { useColorScheme } from 'react-native';
+import { usarEsquemaDeCores } from 'react-native';
 import React from 'react';
-import { AuthProvider } from '@/context/AuthContext';
+import { FornecedorAutenticacao } from '@/context/AuthContext';
 
 /**
  * LayoutRaiz (RootLayout)
@@ -13,12 +13,12 @@ import { AuthProvider } from '@/context/AuthContext';
  */
 export default function LayoutRaiz() {
   // Hook do React Native para descobrir se o celular está no modo claro ou escuro
-  const esquemaDeCores = useColorScheme();
+  const esquemaDeCores = usarEsquemaDeCores();
 
   return (
     // ThemeProvider aplica o tema claro ou escuro em toda a navegação baseada na preferência do usuário
     <ThemeProvider value={esquemaDeCores === 'dark' ? DarkTheme : DefaultTheme}>
-      <AuthProvider>
+      <FornecedorAutenticacao>
         {/* Stack configura a navegação em formato de pilha. headerShown: false esconde o cabeçalho padrão. */}
         <Stack screenOptions={{ headerShown: false }}>
           {/* Tela de login */}
@@ -33,7 +33,7 @@ export default function LayoutRaiz() {
             options={{ presentation: 'modal', headerShown: true, title: 'Adicionar Produto' }} 
           />
         </Stack>
-      </AuthProvider>
+      </FornecedorAutenticacao>
     </ThemeProvider>
   );
 }

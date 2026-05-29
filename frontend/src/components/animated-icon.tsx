@@ -1,20 +1,19 @@
 import { Image } from 'expo-image';
 import { useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import Animated, { Easing, Keyframe } from 'react-native-reanimated';
-import { scheduleOnRN } from 'react-native-worklets';
+import Animated, { Easing, Keyframe, runOnJS } from 'react-native-reanimated';
 
-const INITIAL_SCALE_FACTOR = Dimensions.get('screen').height / 90;
-const DURATION = 600;
+const FATOR_ESCALA_INICIAL = Dimensions.get('screen').height / 90;
+const DURACAO = 600;
 
-export function AnimatedSplashOverlay() {
+export function SuperposiçãoCarregamentoAnimada() {
   const [visible, setVisible] = useState(true);
 
   if (!visible) return null;
 
   const splashKeyframe = new Keyframe({
     0: {
-      transform: [{ scale: INITIAL_SCALE_FACTOR }],
+      transform: [{ scale: FATOR_ESCALA_INICIAL }],
       opacity: 1,
     },
     20: {
@@ -33,10 +32,10 @@ export function AnimatedSplashOverlay() {
 
   return (
     <Animated.View
-      entering={splashKeyframe.duration(DURATION).withCallback((finished) => {
+      entering={splashKeyframe.duration(DURACAO).withCallback((finished) => {
         'worklet';
         if (finished) {
-          scheduleOnRN(setVisible, false);
+          runOnJS(setVisible)(false);
         }
       })}
       style={styles.backgroundSolidColor}
@@ -44,9 +43,9 @@ export function AnimatedSplashOverlay() {
   );
 }
 
-const keyframe = new Keyframe({
+const frameChave = new Keyframe({
   0: {
-    transform: [{ scale: INITIAL_SCALE_FACTOR }],
+    transform: [{ scale: FATOR_ESCALA_INICIAL }],
   },
   100: {
     transform: [{ scale: 1 }],
@@ -54,7 +53,7 @@ const keyframe = new Keyframe({
   },
 });
 
-const logoKeyframe = new Keyframe({
+const frameChaveLogotipo = new Keyframe({
   0: {
     transform: [{ scale: 1.3 }],
     opacity: 0,
@@ -71,7 +70,7 @@ const logoKeyframe = new Keyframe({
   },
 });
 
-const glowKeyframe = new Keyframe({
+const frameChaveBrilho = new Keyframe({
   0: {
     transform: [{ rotateZ: '0deg' }],
   },
@@ -80,15 +79,15 @@ const glowKeyframe = new Keyframe({
   },
 });
 
-export function AnimatedIcon() {
+export function IconeAnimado() {
   return (
     <View style={styles.iconContainer}>
-      <Animated.View entering={glowKeyframe.duration(60 * 1000 * 4)} style={styles.glow}>
+      <Animated.View entering={frameChaveBrilho.duration(60 * 1000 * 4)} style={styles.glow}>
         <Image style={styles.glow} source={require('@/assets/images/logo-glow.png')} />
       </Animated.View>
 
-      <Animated.View entering={keyframe.duration(DURATION)} style={styles.background} />
-      <Animated.View style={styles.imageContainer} entering={logoKeyframe.duration(DURATION)}>
+      <Animated.View entering={frameChave.duration(DURACAO)} style={styles.background} />
+      <Animated.View style={styles.imageContainer} entering={frameChaveLogotipo.duration(DURACAO)}>
         <Image style={styles.image} source={require('@/assets/images/expo-logo.png')} />
       </Animated.View>
     </View>

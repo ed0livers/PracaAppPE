@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Alert, ActivityIndicator, ScrollView } from 'react-native';
 import { router } from 'expo-router';
-import { API_URL } from '@/constants/api';
-import { useAuth } from '@/context/AuthContext';
+import { URL_API } from '@/constants/api';
+import { usarAutenticacao } from '@/context/AuthContext';
 
 /**
  * TelaDeLogin (LoginScreen)
  */
 export default function TelaDeLogin() {
-  const [isModoCadastro, setIsModoCadastro] = useState(false);
+  const [estaEmModoCadastro, setEstaEmModoCadastro] = useState(false);
   
   // Variáveis de estado
   const [nomeDigitado, setNomeDigitado] = useState('');
@@ -36,7 +36,7 @@ export default function TelaDeLogin() {
   };
 
   // Extrair a função setUsuario do nosso contexto
-  const { setUsuario } = useAuth();
+  const { setUsuario } = usarAutenticacao();
 
   const realizarLogin = async () => {
     if (!emailDigitado || !senhaDigitada) {
@@ -46,7 +46,7 @@ export default function TelaDeLogin() {
 
     setCarregando(true);
     try {
-      const resposta = await fetch(`${API_URL}/auth/login`, {
+      const resposta = await fetch(`${URL_API}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: emailDigitado, senha: senhaDigitada }),
@@ -80,7 +80,7 @@ export default function TelaDeLogin() {
       }
     } catch (erro) {
       console.error(erro);
-      Alert.alert('Erro de Conexão', `Não foi possível conectar ao backend (${API_URL}). Verifique se o IP está correto no arquivo api.ts.`);
+      Alert.alert('Erro de Conexão', `Não foi possível conectar ao backend (${URL_API}). Verifique se o IP está correto no arquivo api.ts.`);
     } finally {
       setCarregando(false);
     }
@@ -128,7 +128,7 @@ export default function TelaDeLogin() {
 
     setCarregando(true);
     try {
-      const resposta = await fetch(`${API_URL}/auth/cadastrar`, {
+      const resposta = await fetch(`${URL_API}/auth/cadastrar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -144,14 +144,14 @@ export default function TelaDeLogin() {
         // Limpa os campos de senha
         setSenhaDigitada('');
         setConfirmarSenhaDigitada('');
-        setIsModoCadastro(false); // Volta pra tela inicial
+        setEstaEmModoCadastro(false); // Volta pra tela inicial
       } else {
         // Como o e-mail é UNIQUE na tabela, se falhar muito provável é duplicado
         Alert.alert('E-mail indisponível', 'Este e-mail já está sendo utilizado por outra conta. Faça o login!');
       }
     } catch (erro) {
       console.error(erro);
-      Alert.alert('Erro de Conexão', `Não foi possível conectar ao backend (${API_URL}).`);
+      Alert.alert('Erro de Conexão', `Não foi possível conectar ao backend (${URL_API}).`);
     } finally {
       setCarregando(false);
     }
@@ -173,7 +173,7 @@ export default function TelaDeLogin() {
         <View style={estilos.formulario}>
           
           {/* Só mostra Nome e Data se o botão de "Cadastrar" foi clicado */}
-          {isModoCadastro && (
+          {estaEmModoCadastro && (
             <>
               <TextInput
                 style={estilos.campoDeTexto}
@@ -213,7 +213,7 @@ export default function TelaDeLogin() {
           />
           
           {/* Se estiver no cadastro, mostra o campo de confirmação */}
-          {isModoCadastro && (
+          {estaEmModoCadastro && (
             <TextInput
               style={estilos.campoDeTexto}
               placeholder="Confirmar Senha"
@@ -226,25 +226,25 @@ export default function TelaDeLogin() {
           
           <TouchableOpacity 
             style={estilos.botaoPrincipal} 
-            onPress={isModoCadastro ? realizarCadastro : realizarLogin}
+            onPress={estaEmModoCadastro ? realizarCadastro : realizarLogin}
             disabled={carregando}
           >
             {carregando ? (
               <ActivityIndicator color="#fff" />
             ) : (
               <Text style={estilos.textoBotaoPrincipal}>
-                {isModoCadastro ? 'Criar Conta' : 'Entrar'}
+                {estaEmModoCadastro ? 'Criar Conta' : 'Entrar'}
               </Text>
             )}
           </TouchableOpacity>
 
           <TouchableOpacity 
             style={estilos.botaoSecundario} 
-            onPress={() => setIsModoCadastro(!isModoCadastro)}
+            onPress={() => setEstaEmModoCadastro(!estaEmModoCadastro)}}
             disabled={carregando}
           >
             <Text style={estilos.textoBotaoSecundario}>
-              {isModoCadastro ? 'Já tem uma conta? Faça Login' : 'Não tem conta? Cadastre-se'}
+              {estaEmModoCadastro ? 'Já tem uma conta? Faça Login' : 'Não tem conta? Cadastre-se'}
             </Text>
           </TouchableOpacity>
         </View>

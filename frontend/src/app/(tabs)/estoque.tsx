@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import { API_URL } from '@/constants/api'; // Importamos a URL do servidor
+import { router, useFocusEffect } from 'expo-router';
+import { URL_API } from '@/constants/api'; // Importamos a URL do servidor
 
 /**
  * TelaDeEstoque (EstoqueScreen)
@@ -14,15 +14,18 @@ export default function TelaDeEstoque() {
   // Variáveis de estado
   const [produtos, setProdutos] = useState<any[]>([]); // Lista de produtos vinda da API
   const [carregando, setCarregando] = useState(true); // Controla se mostramos a bolinha de loading
+  const [pesquisa, setPesquisa] = useState(''); // Controla o texto digitado na pesquisa
 
-  // O "useEffect" roda um pedaço de código sozinho toda vez que a tela é carregada
-  useEffect(() => {
-    buscarProdutosNaAPI();
-  }, []);
+  // Atualiza os produtos toda vez que o usuário foca na tela de estoque
+  useFocusEffect(
+    useCallback(() => {
+      buscarProdutosNaAPI();
+    }, [])
+  );
 
   const buscarProdutosNaAPI = async () => {
     try {
-      const resposta = await fetch(`${API_URL}/produtos`);
+      const resposta = await fetch(`${URL_API}/produtos`);
       const dadosDoBanco = await resposta.json();
       setProdutos(dadosDoBanco); // Atualiza a tela com os dados reais
     } catch (erro) {
@@ -31,6 +34,14 @@ export default function TelaDeEstoque() {
       setCarregando(false); // Esconde a bolinha de carregamento
     }
   };
+
+  // Filtra os produtos com base no texto de busca (nome ou categoria)
+  const produtosFiltrados = produtos.filter((item) => {
+    const termo = pesquisa.toLowerCase();
+    const nomeMatch = item.nome ? item.nome.toLowerCase().includes(termo) : false;
+    const categoriaMatch = item.categoria ? item.categoria.toLowerCase().includes(termo) : false;
+    return nomeMatch || categoriaMatch;
+  });
 
   return (
     <View style={estilos.container}>
@@ -41,6 +52,8 @@ export default function TelaDeEstoque() {
           style={estilos.campoDePesquisa}
           placeholder="Buscar produtos..."
           placeholderTextColor="#888"
+          value={pesquisa}
+          onChangeText={setPesquisa}
         />
       </View>
 
@@ -49,9 +62,15 @@ export default function TelaDeEstoque() {
         <ActivityIndicator size="large" color="#208AEF" style={{ marginTop: 50 }} />
       ) : (
         <FlatList
-          data={produtos} // Usando a lista real baixada do servidor
+          data={produtosFiltrados} // Usando a lista filtrada
           keyExtractor={(produto) => produto.id.toString()} // O ID do banco de dados
           contentContainerStyle={estilos.estiloLista}
+          ListEmptyComponent={
+            <View style={{ alignItems: 'center', marginTop: 40 }}>
+              <Ionicons name="cube-outline" size={48} color="#ccc" />
+              <Text style={{ color: '#888', marginTop: 12 }}>Nenhum produto encontrado</Text>
+            </View>
+          }
           
           // A função "renderItem" diz como CADA produto da lista deve ser desenhado na tela
           renderItem={({ item }) => (

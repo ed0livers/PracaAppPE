@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { useColorScheme } from 'react-native';
+import { usarEsquemaDeCores } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 /**
@@ -10,7 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
  */
 export default function LayoutDasAbas() {
   // Verifica se o usuário prefere tema escuro ou claro
-  const esquemaDeCores = useColorScheme();
+  const esquemaDeCores = usarEsquemaDeCores();
   const temaEscuroAtivado = esquemaDeCores === 'dark';
 
   return (

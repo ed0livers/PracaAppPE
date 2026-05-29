@@ -1,16 +1,16 @@
 import { View, type ViewProps } from 'react-native';
 
-import { ThemeColor } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { CorTema } from '@/constants/tema';
+import { usarTema } from '@/hooks/usar-tema';
 
-export type ThemedViewProps = ViewProps & {
+export type PropsVisualizaçãoTemática = ViewProps & {
   lightColor?: string;
   darkColor?: string;
-  type?: ThemeColor;
+  type?: CorTema;
 };
 
-export function ThemedView({ style, lightColor, darkColor, type, ...otherProps }: ThemedViewProps) {
-  const theme = useTheme();
+export function VisualizaçãoTemática({ style, lightColor, darkColor, type, ...otherProps }: PropsVisualizaçãoTemática) {
+  const tema = usarTema();
 
-  return <View style={[{ backgroundColor: theme[type ?? 'background'] }, style]} {...otherProps} />;
+  return <View style={[{ backgroundColor: tema[type ?? 'background'] }, style]} {...otherProps} />;
 }

@@ -2,16 +2,16 @@ import { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, Alert, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useAuth } from '@/context/AuthContext';
+import { usarAutenticacao } from '@/context/AuthContext';
 import * as ImagePicker from 'expo-image-picker'; // Biblioteca para acessar Câmera e Galeria
 
 /**
  * TelaDeConfiguracoes (ConfigsScreen)
  */
 export default function TelaDeConfiguracoes() {
-  const { usuario, setUsuario } = useAuth();
+  const { usuario, setUsuario } = usarAutenticacao();
   
-  const [isEditando, setIsEditando] = useState(false);
+  const [estaEditando, setEstaEditando] = useState(false);
   const [novaUrlFoto, setNovaUrlFoto] = useState('');
 
   /**
@@ -37,7 +37,7 @@ export default function TelaDeConfiguracoes() {
     // 3. Se a pessoa escolheu a foto e não cancelou, salva no perfil
     if (!resultado.canceled) {
       setUsuario({ ...usuario, foto: resultado.assets[0].uri });
-      setIsEditando(false); // Fecha o menu de edição
+      setEstaEditando(false); // Fecha o menu de edição
     }
   };
 
@@ -63,7 +63,7 @@ export default function TelaDeConfiguracoes() {
     // 3. Salva a foto tirada
     if (!resultado.canceled) {
       setUsuario({ ...usuario, foto: resultado.assets[0].uri });
-      setIsEditando(false);
+      setEstaEditando(false);
     }
   };
 
@@ -74,7 +74,7 @@ export default function TelaDeConfiguracoes() {
     if (novaUrlFoto.trim() !== '') {
       setUsuario({ ...usuario, foto: novaUrlFoto });
     }
-    setIsEditando(false);
+    setEstaEditando(false);
     setNovaUrlFoto('');
   };
 
@@ -96,7 +96,7 @@ export default function TelaDeConfiguracoes() {
         <Text style={estilos.emailUsuario}>{usuario?.email || 'email@exemplo.com'}</Text>
 
         {/* Menu de Troca de Foto */}
-        {isEditando && (
+        {estaEditando && (
           <View style={estilos.areaDeEdicao}>
             <Text style={estilos.tituloEdicao}>Escolha de onde importar a foto</Text>
             
@@ -132,7 +132,7 @@ export default function TelaDeConfiguracoes() {
       {/* Lista de opções do menu */}
       <View style={estilos.menuDeOpcoes}>
         
-        <TouchableOpacity style={estilos.itemDeMenu} onPress={() => setIsEditando(!isEditando)}>
+        <TouchableOpacity style={estilos.itemDeMenu} onPress={() => setEstaEditando(!estaEditando)}>
           <Ionicons name="person-outline" size={24} color="#555" />
           <Text style={estilos.textoDoMenu}>Editar Perfil (Trocar Foto)</Text>
           <Ionicons name="chevron-forward" size={20} color="#ccc" />

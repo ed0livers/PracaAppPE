@@ -1,0 +1,58 @@
+# ============================================
+# Docker Compose — Praça App PE
+# ============================================
+# Sobe o banco de dados MySQL e o backend Java
+# com um único comando: docker compose up --build
+# ============================================
+
+services:
+
+  # ------------------------------------------
+  # Serviço 1: Banco de Dados MySQL
+  # ------------------------------------------
+  db:
+    image: mysql:8.0
+    container_name: praca-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_DATABASE: praca_app
+    ports:
+      - "3306:3306"
+    volumes:
+      # Persistência: dados do banco sobrevivem ao reiniciar o contêiner
+      - mysql_data:/var/lib/mysql
+      # Inicialização automática: o MySQL executa este script na primeira vez
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123456"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ------------------------------------------
+  # Serviço 2: Backend Spring Boot (API Java)
+  # ------------------------------------------
+  backend:
+    build:
+      context: ./backend/backend
+      dockerfile: Dockerfile
+    container_name: praca-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      # Aponta a conexão do banco para o contêiner "db" na rede interna do Docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/praca_app?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: "123456"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+
+# Volume nomeado para persistência dos dados do MySQL
+volumes:
+  mysql_data:

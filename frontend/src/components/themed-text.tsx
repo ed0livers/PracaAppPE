@@ -1,20 +1,20 @@
 import { Platform, StyleSheet, Text, type TextProps } from 'react-native';
 
-import { Fonts, ThemeColor } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { Fontes, CorTema } from '@/constants/tema';
+import { usarTema } from '@/hooks/usar-tema';
 
-export type ThemedTextProps = TextProps & {
+export type PropsTextoTemático = TextProps & {
   type?: 'default' | 'title' | 'small' | 'smallBold' | 'subtitle' | 'link' | 'linkPrimary' | 'code';
-  themeColor?: ThemeColor;
+  themeColor?: CorTema;
 };
 
-export function ThemedText({ style, type = 'default', themeColor, ...rest }: ThemedTextProps) {
-  const theme = useTheme();
+export function TextoTemático({ style, type = 'default', themeColor, ...rest }: PropsTextoTemático) {
+  const tema = usarTema();
 
   return (
     <Text
       style={[
-        { color: theme[themeColor ?? 'text'] },
+        { color: tema[themeColor ?? 'text'] },
         type === 'default' && styles.default,
         type === 'title' && styles.title,
         type === 'small' && styles.small,
